@@ -22,6 +22,9 @@ class WindowsLocationProviderTest {
                 WindowsLocationProvider.parseOutput("RESULT|DENIED|Location is disabled").status());
         assertEquals(WindowsLocationProvider.Status.UNAVAILABLE,
                 WindowsLocationProvider.parseOutput("RESULT|UNAVAILABLE|No fix").status());
+        assertEquals(WindowsLocationProvider.Status.UNAVAILABLE,
+                WindowsLocationProvider.parseOutput(
+                        "RESULT|UNAVAILABLE|Windows location service started but returned no position.").status());
         assertEquals(WindowsLocationProvider.Status.FAILED,
                 WindowsLocationProvider.parseOutput("RESULT|SUCCESS|91|0|10").status());
         assertEquals(WindowsLocationProvider.Status.FAILED,

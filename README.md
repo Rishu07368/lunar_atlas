@@ -30,7 +30,7 @@ Download a `LunarAtlas-Windows.zip` from the repository's [Releases](https://git
 ## Quick start
 
 1. Launch Lunar Atlas; its bundled records work offline.
-2. Select a built-in location, choose **Use My Current Location** for a one-time Windows location-service request, or use **Enter coordinates…**. Windows location access must be enabled in its privacy settings; confirm the time zone because Windows coordinates do not include one.
+2. Select a built-in location, choose **Use My Current Location** for a one-time Windows location-service request (allow up to 20 seconds for a fix), or use **Enter coordinates…**. Enable both Windows Location services and **Let desktop apps access your location**; confirm the time zone because Windows coordinates do not include one.
 3. Select a date in the top bar.
 4. Use **Observatory** for calculated sky quantities and **Earth–Moon** for the schematic phase relationship.
 5. Click a labeled city on **Geographic explorer**, or select it from the location menu.

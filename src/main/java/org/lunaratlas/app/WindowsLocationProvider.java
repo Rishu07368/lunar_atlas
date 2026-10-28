@@ -38,7 +38,7 @@ final class WindowsLocationProvider {
             script = copyProviderScript();
             String powershell = Path.of(System.getenv().getOrDefault("WINDIR", "C:\\Windows"),
                     "System32", "WindowsPowerShell", "v1.0", "powershell.exe").toString();
-            process = new ProcessBuilder(powershell, "-NoProfile",
+            process = new ProcessBuilder(powershell, "-NoProfile", "-WindowStyle", "Hidden",
                     "-File", script.toString(), "-TimeoutSeconds", "20")
                     .redirectErrorStream(true)
                     .start();
