@@ -10,22 +10,37 @@ $watcher = $null
 try {
     Add-Type -AssemblyName System.Device
     $watcher = New-Object System.Device.Location.GeoCoordinateWatcher
-    $started = $watcher.TryStart($false, [TimeSpan]::FromSeconds($TimeoutSeconds))
+    $deadline = [DateTime]::UtcNow.AddSeconds($TimeoutSeconds)
+    $startupTimeout = [Math]::Min(5, $TimeoutSeconds)
+    $started = $watcher.TryStart($false, [TimeSpan]::FromSeconds($startupTimeout))
 
     if (-not $started) {
         $status = $watcher.Status.ToString()
         if ($status -eq "Disabled") {
             Write-Output "RESULT|DENIED|Windows location services are disabled or access was denied."
+            exit 0
         }
-        else {
+        if ($status -ne "NoData") {
             Write-Output "RESULT|UNAVAILABLE|Windows location service status: $status"
+            exit 0
         }
-        exit 0
+        $watcher.Start()
     }
 
-    $coordinate = $watcher.Position.Location
+    do {
+        if ($watcher.Status.ToString() -eq "Disabled") {
+            Write-Output "RESULT|DENIED|Windows location access is disabled or denied."
+            exit 0
+        }
+        $coordinate = $watcher.Position.Location
+        if (-not $coordinate.IsUnknown) {
+            break
+        }
+        Start-Sleep -Milliseconds 250
+    } while ([DateTime]::UtcNow -lt $deadline)
+
     if ($coordinate.IsUnknown) {
-        Write-Output "RESULT|UNAVAILABLE|Windows location service returned no coordinates."
+        Write-Output "RESULT|UNAVAILABLE|Windows location service started but returned no position within the timeout. Check desktop-app location access and available location sources."
         exit 0
     }
 

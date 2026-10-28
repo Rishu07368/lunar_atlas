@@ -189,7 +189,7 @@ final class MainFrame extends JFrame {
 
     private void detectCurrentLocation() {
         detectLocation.setEnabled(false);
-        status.setText("Requesting one-time location from Windows; no continuous tracking is used…");
+        status.setText("Requesting a one-time Windows location fix; this may take up to 20 seconds…");
         new SwingWorker<WindowsLocationProvider.Result, Void>() {
             @Override
             protected WindowsLocationProvider.Result doInBackground() {
@@ -298,6 +298,7 @@ final class MainFrame extends JFrame {
         customLocation = location;
         locations.addItem(location);
         locations.setSelectedItem(location);
+        setDate(LocalDate.now(location.zoneId()));
         status.setText(source + " applied · coordinates remain on this device · time zone " + location.zoneId());
     }
 
@@ -324,9 +325,12 @@ final class MainFrame extends JFrame {
     private void showLocationFailure(WindowsLocationProvider.Result result) {
         String details = switch (result.status()) {
             case DENIED -> "Windows location access is disabled or denied. Enable Location services in "
-                    + "Windows Settings > Privacy & security > Location, then try again.";
-            case UNAVAILABLE -> "Windows could not provide coordinates before the request timed out. "
-                    + "A location sensor, Wi-Fi positioning, network, or Windows location service may be unavailable.";
+                    + "Windows Settings > Privacy & security > Location. Also enable the separate "
+                    + "“Let desktop apps access your location” switch; allowing Microsoft Store apps alone "
+                    + "may not grant a traditional desktop app access.";
+            case UNAVAILABLE -> result.detail() + "\nCheck Windows Location services and the separate "
+                    + "“Let desktop apps access your location” setting. If enabled, this PC may not have "
+                    + "a sensor or Windows location provider able to determine a fix.";
             case TIMEOUT -> result.detail();
             case FAILED -> result.detail();
             case SUCCESS -> throw new IllegalStateException("Successful location has no failure message.");

@@ -6,4 +6,5 @@
 - Added phase/illumination, approximate lunar position and rise/set, phase event calendar, schematic orbit and graticule views, searchable sourced research, local notes, and bookmarks.
 - Added JUnit regression tests, Windows `jpackage` app-image packaging, SHA-256 sidecar generation, and a Windows CI/release workflow.
 - Added one-time opt-in Windows device location, manual coordinate/time-zone entry, and local persistence/refresh of custom observer locations.
+- Fixed location detection to wait for the Windows provider's position after startup reports `NoData`; custom-location selection also sets the date to the location's current local day.
 - Documented scientific, cultural, geographic, and release boundaries. No MSI/installer or public release artifact is included in source by default.

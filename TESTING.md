@@ -42,7 +42,7 @@ The UI is Swing and does not have a dedicated automated UI-driving library. Manu
 ## Location feature verification record
 
 - Automated verification: Windows provider response parsing (success, denied, unavailable, malformed), local calculation changes for different coordinates, and custom coordinate/time-zone persistence pass in the JUnit suite.
-- Windows provider integration: the final portable app was launched with Java removed from `PATH`; invoking **Use My Current Location** ran the bundled Windows provider and displayed **Current location unavailable** on this host. This environment did not return a live fix, so actual coordinate success and timezone-confirmation behavior were not verified against a real sensor/provider.
+- Windows provider integration: local diagnostics showed `GeoCoordinateWatcher.TryStart` returns true while status initially remains `NoData` and `Position.Location.IsUnknown`. The provider previously checked once and prematurely reported no location. After adding a bounded wait, the provider returned a valid live fix on this Windows host within a 10-second request. The provider was then invoked from the extracted packaged JAR and returned `SUCCESS` (coordinate values deliberately withheld). The portable launcher also opened and closed normally with Java removed from `PATH`; the complete Swing confirmation/apply interaction was not automated.
 - The packaged provider failure state appeared without replacing the existing built-in selection. Full manual form entry through submission was not confirmed in the packaged UI; the manual input path is covered by compilation, coordinate validation, and preference persistence tests.
 
 ## Accuracy limits
